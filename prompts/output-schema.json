@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "required": ["language","sentiment_label","sentiment_score","category","secondary_categories","root_cause","urgency","churn_risk","summary","draft_response","confidence","flags"],
+  "properties": {
+    "language": {"type": "string"},
+    "sentiment_label": {"type": "string", "enum": ["Very Negative","Negative","Neutral","Positive","Very Positive","Mixed"]},
+    "sentiment_score": {"type": "number"},
+    "category": {"type": "string", "enum": ["Billing & Payments","Product Bug","Performance & Reliability","Feature Request","Usability & UX","Account & Access","Shipping & Delivery","Customer Support Experience","Security & Privacy","Pricing & Plans","Praise / Positive Feedback","Other"]},
+    "secondary_categories": {"type": "array", "items": {"type": "string"}},
+    "root_cause": {"type": "string", "enum": ["software_defect","infrastructure_outage","billing_error","process_failure","slow_support_response","unclear_documentation","ux_confusion","missing_feature","pricing_dissatisfaction","third_party_dependency","fulfilment_logistics","user_error","policy_conflict","unknown"]},
+    "urgency": {"type": "string", "enum": ["P1","P2","P3"]},
+    "churn_risk": {"type": "string", "enum": ["Low","Medium","High"]},
+    "summary": {"type": "string"},
+    "draft_response": {"type": "string"},
+    "confidence": {"type": "number"},
+    "flags": {"type": "array", "items": {"type": "string"}}
+  }
+}
