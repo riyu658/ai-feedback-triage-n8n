@@ -1,0 +1,7 @@
+{
+  "feedback_text": "I was charged twice this month and nobody answers my emails. I will cancel.",
+  "customer_id": "CUST-002",
+  "customer_email": "test2@example.com",
+  "customer_tier": "standard",
+  "source": "app"
+}
