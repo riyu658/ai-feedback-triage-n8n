@@ -123,7 +123,7 @@ After the model responds, [`code/validate.js`](code/validate.js) re-checks the s
 curl -X POST "http://localhost:5678/webhook-test/feedback-intake" \
   -H "Content-Type: application/json" \
   -H "X-API-Key: YOUR_KEY" \
-  -d @data/sample-payloads.json
+  -d @data/sample-payload.json
 ```
 
 Use the Test URL while n8n is listening, or activate the workflow and use the Production URL (`/webhook/feedback-intake`).
@@ -135,7 +135,7 @@ Manual tests run so far (see [docs/testing.md](docs/testing.md)):
 | Input | Result |
 |---|---|
 | "It would be nice to have dark mode. Love the app otherwise!" (free) | Feature Request, P3, Low churn, no flags, status New |
-| "Wow, 4 hours on hold. Truly the best support ever." (standard) | Negative sentiment, Customer Support Experience, P2, `sarcasm_detected` |
+| "Wow, 4 hours on hold. Truly the best support ever." (standard) | Negative sentiment, Customer Support Experience, P2 (previously P1 before the prompt was tightened) |
 | "I was charged twice this month and nobody answers my emails. I will cancel." (standard) | Billing & Payments, `billing_error`, P1, High churn, Slack alert sent |
 
 ### What testing changed in the prompt
