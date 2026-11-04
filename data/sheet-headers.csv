@@ -1,0 +1,1 @@
+ticket_id,timestamp,submitted_at,source,customer_id,customer_email,customer_tier,raw_text,language,sentiment_label,sentiment_score,category,secondary_categories,root_cause,urgency,churn_risk,actionable_summary,suggested_reply,confidence,flags,escalated,status,assigned_to,sla_due_at,first_response_at,resolved_at,content_hash,llm_model,prompt_version,processing_error
