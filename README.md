@@ -175,7 +175,7 @@ workflow/   exported n8n workflow (secrets removed)
 prompts/    system prompt and JSON output schema
 code/       sanitize.js and validate.js (n8n Code node scripts)
 data/       sheet headers, sample payloads, fake example rows
-docs/       architecture, setup guides, testing notes, screenshots
+docs/       setup guides, testing notes, screenshots
 scripts/    helper scripts for sending test requests
 ```
 
