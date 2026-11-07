@@ -24,6 +24,13 @@ Re-tested after fixing the workflow wiring. A low-urgency message (dark mode, fr
 | 7 | Too-short feedback | `feedback_text` = "hi" | 400 with the error reason, no sheet row, no Slack alert, no LLM call | 400 returned; re-tested after the wiring fix and the run stops at `Respond 400` | Pass |
 | 8 | Wrong API key | Incorrect `X-API-Key` | 403 | 403 returned | Pass |
 
+### Error workflow
+
+| # | Case | Action | Expected | Observed | Result |
+|---|---|---|---|---|---|
+| 9 | Forced LLM failure | Set the Gemini model to an invalid name, publish, send a valid message | 202 reply, execution fails, alert in `#ops-alerts` naming the failing node, no sheet row, no P1 alert | Alert received in `#ops-alerts` with the failing node and error text | Pass |
+| 10 | Recovery | Restore the valid model, publish, send a valid message | One row, one P1 alert, nothing in `#ops-alerts` | Normal operation confirmed | Pass |
+
 A P1 Slack alert was confirmed in earlier runs for the double-charge case.
 
 ## Observations
