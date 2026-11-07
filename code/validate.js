@@ -77,7 +77,7 @@ return { json: {
   status: status,
   sla_due_at: due,
   content_hash: src.content_hash,
-  llm_model: 'gemini-flash',
+  llm_model: 'gemini-3.1-flash-lite',
   prompt_version: 'v1.0.0',
   processing_error: ok ? '' : 'schema_validation_failed',
   route: !ok ? 'FALLBACK' : (escalate ? 'P1' : urgency)
