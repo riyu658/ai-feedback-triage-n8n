@@ -1,0 +1,71 @@
+{
+  "name": "Feedback Triage Error Handler",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Setup\n1. Paste your ops-alerts Slack Incoming Webhook URL into **Slack Error Alert** (replace YOUR_SLACK_OPS_WEBHOOK_URL).\n2. Publish this workflow.\n3. In the main workflow: menu (...) > Settings > Error workflow > select this workflow > Save.\nThe alert deliberately excludes customer feedback text.",
+        "height": 240,
+        "width": 460
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        -300
+      ],
+      "id": "b1b2c3d4-0002-4000-8000-000000000001",
+      "name": "Setup notes"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -200,
+        0
+      ],
+      "id": "b1b2c3d4-0002-4000-8000-000000000002",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_SLACK_OPS_WEBHOOK_URL",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  text: \"WORKFLOW ERROR: \" + $json.workflow.name + \"\\nFailed node: \" + ($json.execution?.lastNodeExecuted || \"unknown\") + \"\\nError: \" + String($json.execution?.error?.message || \"unknown\").slice(0, 500) + \"\\nExecution: \" + ($json.execution?.url || \"n/a\") + \"\\nTime (UTC): \" + new Date().toISOString()\n}) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        60,
+        0
+      ],
+      "id": "b1b2c3d4-0002-4000-8000-000000000003",
+      "name": "Slack Error Alert",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Slack Error Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": []
+}
