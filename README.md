@@ -16,6 +16,7 @@ Support teams often triage feedback by hand. Urgent issues (double charges, outa
 4. **Applies business rules** in code, so critical keywords or high-value customers can raise urgency but never lower it.
 5. **Routes** by urgency: P1 or high-churn tickets trigger an immediate Slack alert.
 6. **Logs** every ticket to Google Sheets with SLA due time, status and the full analysis.
+7. **Alerts on failures:** a separate error workflow posts to `#ops-alerts` when a live run fails.
 
 ## Architecture
 
@@ -120,7 +121,8 @@ After the model responds, [`code/validate.js`](code/validate.js) re-checks the s
 4. Create a Slack Incoming Webhook ([docs/slack-setup.md](docs/slack-setup.md)).
 5. Import `workflow/feedback-triage-v1.json` (Workflows > Import from file).
 6. In the imported workflow, set your Slack webhook URL in the `Slack P1 Alert` node, select your Google Sheet in `Log to Sheet`, and select your credentials.
-7. Send a test request:
+7. Optional but recommended: import `workflow/error-handler-v1.json`, set its Slack webhook for a separate `#ops-alerts` channel, publish it, and select it under the main workflow's Settings > Error workflow ([docs/error-handling.md](docs/error-handling.md)).
+8. Send a test request:
 
 ```bash
 curl -X POST "http://localhost:5678/webhook-test/feedback-intake" \
@@ -163,7 +165,8 @@ Notes: category labels varied between runs for the same message, while urgency a
 ## Roadmap
 
 - [x] Reject invalid input with an IF node and a 400 response
-- [ ] Global error workflow (Slack alert and an `Errors` tab)
+- [x] Global error workflow (Slack alert to a separate `#ops-alerts` channel, see [docs/error-handling.md](docs/error-handling.md))
+- [ ] Log errors to an `Errors` sheet tab
 - [ ] Retries with backoff on the LLM node (the Slack and Sheets nodes already retry 3 times)
 - [ ] Duplicate detection using `content_hash`
 - [ ] Golden test set (150+ labeled messages) with accuracy metrics
@@ -174,11 +177,11 @@ Notes: category labels varied between runs for the same message, while urgency a
 ## Repository layout
 
 ```text
-workflow/   exported n8n workflow (secrets removed)
+workflow/   exported n8n workflows: main pipeline and error handler (secrets removed)
 prompts/    system prompt and JSON output schema
 code/       sanitize.js and validate.js (n8n Code node scripts)
 data/       sheet headers, sample payloads, fake example rows
-docs/       setup guides, testing notes, screenshots
+docs/       setup guides, error handling, testing notes, screenshots
 scripts/    helper scripts for sending test requests
 ```
 
