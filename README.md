@@ -10,7 +10,7 @@ Support teams often triage feedback by hand. Urgent issues (double charges, outa
 
 ## What this does
 
-1. **Ingests** feedback through a secured webhook (any form, app or script can POST to it).
+1. **Ingests** feedback through a secured webhook (any form, app or script can POST to it). Invalid input is rejected with a 400; valid input gets a 202 and a ticket ID.
 2. **Cleans** the text: strips HTML, masks long digit runs such as card numbers, validates fields, and generates a unique ticket ID.
 3. **Classifies** it with an LLM using a strict JSON schema: sentiment (label and score), category, root cause, urgency (P1/P2/P3), churn risk, a one-sentence summary, a draft reply, a confidence value and flags.
 4. **Applies business rules** in code, so critical keywords or high-value customers can raise urgency but never lower it.
@@ -23,7 +23,10 @@ Support teams often triage feedback by hand. Urgent issues (double charges, outa
 flowchart LR
     A[Form / App / Script] -->|POST + API key| B[Webhook]
     B --> C[Sanitize<br/>validate, clean, ticket ID]
-    C --> D[LLM Chain<br/>Gemini + JSON schema]
+    C --> V{Valid?}
+    V -->|no| X[400 reply]
+    V -->|yes| Y[202 reply + ticket ID]
+    Y --> D[LLM Chain<br/>Gemini + JSON schema]
     D --> E[Validate<br/>schema check, business rules]
     E --> F{Route}
     F -->|P1 / High churn| G[Slack alert]
@@ -150,7 +153,7 @@ Notes: category labels varied between runs for the same message, while urgency a
 
 ## Limitations
 
-- **Free-tier rate limit:** the Gemini free tier allowed only about 20 requests per day for the model used in testing, so it is suitable for prototyping, not production volume. Free-tier inputs may also be used by Google to improve its products, so do not send real customer data while testing.
+- **Free-tier rate limits:** limits differ per model and can change. In the AI Studio console (checked 2026-11-07), Gemini 3 Flash allowed only 20 requests per day and 5 per minute, which was exhausted during early testing, while Gemini 3.1 Flash Lite (the model this workflow uses) showed 500 requests per day and 15 per minute. That is enough for prototyping and demos but not for production volume. Free-tier inputs may also be used by Google to improve its products, so do not send real customer data while testing.
 - **Local deployment:** n8n runs on a local machine, so the webhook is only reachable from that machine unless hosted or tunnelled.
 - **Google Sheets** is a lightweight store, fine for demos and small volume. Move to a database at scale.
 - **Small test set:** accuracy has been checked on a handful of hand-written messages, not a labeled benchmark.
@@ -159,9 +162,9 @@ Notes: category labels varied between runs for the same message, while urgency a
 
 ## Roadmap
 
-- [ ] Reject invalid input with an IF node and a 400 response
+- [x] Reject invalid input with an IF node and a 400 response
 - [ ] Global error workflow (Slack alert and an `Errors` tab)
-- [ ] Retries with backoff on the LLM and Sheets nodes
+- [ ] Retries with backoff on the LLM node (the Slack and Sheets nodes already retry 3 times)
 - [ ] Duplicate detection using `content_hash`
 - [ ] Golden test set (150+ labeled messages) with accuracy metrics
 - [ ] Looker Studio dashboard: category distribution, sentiment trend, P1 volume, SLA tracking
